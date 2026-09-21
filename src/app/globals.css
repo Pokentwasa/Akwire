@@ -1,0 +1,60 @@
+@import "tailwindcss";
+
+:root {
+  --color-surface: #fafaf8;
+  --color-surface-raised: #ffffff;
+  --color-ink: #17171a;
+  --color-ink-muted: #5c5c63;
+  --color-border: #e4e4e0;
+  --color-accent: #d94f2b;
+  --color-accent-ink: #ffffff;
+  --color-success: #1f7a4d;
+  --color-warning: #b9740c;
+  --color-danger: #c22c2c;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-surface: #131311;
+    --color-surface-raised: #1b1b18;
+    --color-ink: #f2f2ee;
+    --color-ink-muted: #a3a39b;
+    --color-border: #2c2c28;
+    --color-accent: #ff7a52;
+    --color-accent-ink: #17171a;
+  }
+}
+
+:root[data-theme="dark"] {
+  --color-surface: #131311;
+  --color-surface-raised: #1b1b18;
+  --color-ink: #f2f2ee;
+  --color-ink-muted: #a3a39b;
+  --color-border: #2c2c28;
+  --color-accent: #ff7a52;
+  --color-accent-ink: #17171a;
+}
+
+@theme inline {
+  --color-surface: var(--color-surface);
+  --color-surface-raised: var(--color-surface-raised);
+  --color-ink: var(--color-ink);
+  --color-ink-muted: var(--color-ink-muted);
+  --color-border: var(--color-border);
+  --color-accent: var(--color-accent);
+  --color-accent-ink: var(--color-accent-ink);
+  --color-success: var(--color-success);
+  --color-warning: var(--color-warning);
+  --color-danger: var(--color-danger);
+  --font-display: var(--font-display);
+  --font-body: var(--font-body);
+}
+
+body {
+  background: var(--color-surface);
+  color: var(--color-ink);
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+}
