@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createCompany, rejectCompany, shortlistCompany } from "@/domain/companies/commands";
+import { auditCompanyWebsite } from "@/domain/companies/audit";
 import { getCurrentOrganisation } from "@/domain/organisations/queries";
 import { webDesignLocalBusinessPack } from "@/opportunity-packs/web-design-local-business";
 
@@ -59,4 +60,21 @@ export async function rejectCompanyAction(companyId: string) {
   await rejectCompany(org.id, companyId);
   revalidatePath(`/companies/${companyId}`);
   revalidatePath("/companies");
+}
+
+export async function auditCompanyAction(_prevState: unknown, formData: FormData) {
+  const org = await getCurrentOrganisation();
+  if (!org) return { error: "Create your organisation first" };
+
+  const companyId = String(formData.get("companyId") ?? "");
+
+  try {
+    await auditCompanyWebsite(org.id, companyId);
+  } catch (error) {
+    return { error: error instanceof Error ? error.message : "Audit failed" };
+  }
+
+  revalidatePath(`/companies/${companyId}`);
+  revalidatePath("/companies");
+  return { error: null };
 }
