@@ -81,6 +81,15 @@ export const webDesignLocalBusinessPack: OpportunityPack = {
   },
   recommendedService: "Website redesign",
   typicalDecisionMakers: ["Owner", "Founder", "Marketing Manager", "General Manager"],
+  campaignAngles: [
+    "Your physical experience is stronger than your digital one.",
+    "Your customers already love you in person — your website should say so too.",
+    "You've outgrown the website you started with.",
+  ],
+  offers: [
+    "Free website opportunity audit.",
+    "A 15-minute call showing exactly what's costing you bookings online.",
+  ],
 };
 
 export const OPPORTUNITY_PACKS = {

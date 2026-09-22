@@ -34,4 +34,6 @@ export type OpportunityPack = {
   };
   recommendedService: string;
   typicalDecisionMakers: string[];
+  campaignAngles: string[];
+  offers: string[];
 };
