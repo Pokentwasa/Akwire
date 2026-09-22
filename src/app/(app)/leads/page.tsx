@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getCurrentOrganisation } from "@/domain/organisations/queries";
 import { listLeads } from "@/domain/leads/queries";
@@ -31,22 +32,24 @@ export default async function LeadsPage() {
             const company = lead.companies as unknown as { name: string } | null;
             const name = [lead.first_name, lead.last_name].filter(Boolean).join(" ") || "Unnamed";
             return (
-              <Card key={lead.id} className="flex items-center justify-between">
-                <div>
-                  <p className="font-medium text-ink">{name}</p>
-                  <p className="text-sm text-ink-muted">
-                    {lead.email ?? "No email"}
-                    {company ? ` · ${company.name}` : ""}
-                    {campaign ? ` · via ${campaign.name}` : ""}
-                  </p>
-                </div>
-                <div className="flex items-center gap-3">
-                  <span className="text-xs uppercase text-ink-muted">{lead.source}</span>
-                  <span className="rounded-full border border-border px-2.5 py-1 text-xs capitalize text-ink-muted">
-                    {lead.status.replace(/_/g, " ")}
-                  </span>
-                </div>
-              </Card>
+              <Link key={lead.id} href={`/leads/${lead.id}`}>
+                <Card className="flex items-center justify-between transition-colors hover:border-accent">
+                  <div>
+                    <p className="font-medium text-ink">{name}</p>
+                    <p className="text-sm text-ink-muted">
+                      {lead.email ?? "No email"}
+                      {company ? ` · ${company.name}` : ""}
+                      {campaign ? ` · via ${campaign.name}` : ""}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span className="text-xs uppercase text-ink-muted">{lead.source}</span>
+                    <span className="rounded-full border border-border px-2.5 py-1 text-xs capitalize text-ink-muted">
+                      {lead.status.replace(/_/g, " ")}
+                    </span>
+                  </div>
+                </Card>
+              </Link>
             );
           })}
         </div>
