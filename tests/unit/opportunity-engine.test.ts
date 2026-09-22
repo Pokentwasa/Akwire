@@ -43,6 +43,22 @@ describe("scoreOpportunity", () => {
     expect(result.explanation).toContain("Company has no website at all.");
   });
 
+  it("is not artificially low-confidence for a fully-answered no-website case", () => {
+    // The five website-flaw fields are moot once we know there's no website
+    // at all — they should never have been asked, so they must not drag
+    // confidence down. Regression test for a real bug: this case used to
+    // render a bold "high opportunity" score next to "low confidence" and
+    // "collect more evidence", which contradicted itself.
+    const result = scoreOpportunity(webDesignLocalBusinessPack, "Guest house", {
+      hasWebsite: false,
+      googleRating: 4.3,
+      reviewCount: 58,
+    });
+
+    expect(result.confidence).toBe("high");
+    expect(result.recommendedAction).not.toBe("Collect more evidence before acting.");
+  });
+
   it("scores a genuinely good website low on service gap", () => {
     const result = scoreOpportunity(webDesignLocalBusinessPack, "Restaurant", {
       googleRating: 4.8,

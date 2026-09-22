@@ -6,6 +6,8 @@ import { rejectCompanyAction, shortlistCompanyAction } from "@/app/(app)/compani
 import { Button } from "@/components/ui/button";
 import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import { ScoreDial } from "@/components/opportunity/score-dial";
+import { AuditButton } from "@/app/(app)/companies/[id]/audit-button";
+import { RequestConsentButton } from "@/app/(app)/companies/[id]/request-consent-button";
 
 export default async function CompanyWorkspacePage({
   params,
@@ -84,6 +86,8 @@ export default async function CompanyWorkspacePage({
                 {company.status === "rejected" ? "Rejected" : "Reject"}
               </Button>
             </form>
+            {company.website ? <AuditButton companyId={company.id} /> : null}
+            <RequestConsentButton companyId={company.id} />
           </div>
         </>
       ) : (

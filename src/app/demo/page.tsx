@@ -5,12 +5,7 @@ import { seedCompanies } from "@/lib/demo/seed-companies";
 import { Button } from "@/components/ui/button";
 import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import { ScoreDial } from "@/components/opportunity/score-dial";
-
-function scoreColor(score: number) {
-  if (score >= 70) return "text-success";
-  if (score >= 45) return "text-warning";
-  return "text-ink-muted";
-}
+import { scoreColor } from "@/components/opportunity/score-color";
 
 export default function DemoPage() {
   const scored = seedCompanies.map((company) => ({
@@ -64,7 +59,7 @@ export default function DemoPage() {
                 </div>
                 <div className="text-right">
                   <p
-                    className={`font-display text-3xl font-semibold ${scoreColor(opportunity.opportunityScore)}`}
+                    className={`font-display text-3xl font-semibold ${scoreColor(opportunity.opportunityScore, opportunity.confidence)}`}
                   >
                     {opportunity.opportunityScore}
                   </p>
