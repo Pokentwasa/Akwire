@@ -4,9 +4,29 @@ import { NextResponse, type NextRequest } from "next/server";
 export async function updateSession(request: NextRequest) {
   let response = NextResponse.next({ request });
 
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  // No live Supabase project is configured yet (see docs/SETUP.md). Fail
+  // open on public/auth routes rather than 500ing the whole site; app
+  // routes still redirect to login since there's no session to check.
+  if (!supabaseUrl || !supabaseAnonKey) {
+    const isAppRoute =
+      !request.nextUrl.pathname.startsWith("/login") &&
+      !request.nextUrl.pathname.startsWith("/signup") &&
+      request.nextUrl.pathname !== "/";
+
+    if (isAppRoute) {
+      const redirectUrl = request.nextUrl.clone();
+      redirectUrl.pathname = "/login";
+      return NextResponse.redirect(redirectUrl);
+    }
+    return response;
+  }
+
   const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    supabaseUrl,
+    supabaseAnonKey,
     {
       cookies: {
         getAll() {
