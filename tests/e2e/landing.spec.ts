@@ -14,3 +14,10 @@ test("unauthenticated visitors are redirected away from the app", async ({ page 
   await page.goto("/today");
   await expect(page).toHaveURL(/\/login$/);
 });
+
+test("demo dashboard shows real opportunity scores with no login required", async ({ page }) => {
+  await page.goto("/demo");
+  await expect(page).toHaveURL(/\/demo$/);
+  await expect(page.getByRole("heading", { name: "Harbour Table" })).toBeVisible();
+  await expect(page.getByText("Add to campaign.").first()).toBeVisible();
+});

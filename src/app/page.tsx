@@ -16,12 +16,15 @@ export default function Home() {
       </p>
       <div className="flex gap-3">
         <Button asChild size="lg">
-          <Link href="/signup">Get started</Link>
+          <Link href="/demo">See it in action</Link>
         </Button>
         <Button asChild size="lg" variant="secondary">
-          <Link href="/login">Log in</Link>
+          <Link href="/signup">Get started</Link>
         </Button>
       </div>
+      <Link href="/login" className="text-sm text-ink-muted hover:text-ink">
+        Already have an account? Log in
+      </Link>
     </main>
   );
 }
