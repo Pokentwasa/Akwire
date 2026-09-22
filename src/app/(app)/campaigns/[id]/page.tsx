@@ -93,6 +93,12 @@ export default async function CampaignWorkspacePage({ params }: PageProps<"/camp
       <Card>
         <CardTitle>{campaign.angle}</CardTitle>
         <CardDescription className="mt-1">{campaign.offer}</CardDescription>
+        <p className="mt-3 text-sm text-ink-muted">
+          Public lead page:{" "}
+          <Link href={`/l/${campaign.id}`} className="text-accent hover:underline">
+            /l/{campaign.id}
+          </Link>
+        </p>
       </Card>
 
       <div>

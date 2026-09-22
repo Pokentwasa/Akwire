@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getCurrentOrganisation } from "@/domain/organisations/queries";
 import { listCompanies } from "@/domain/companies/queries";
+import { listLeads } from "@/domain/leads/queries";
 import { Button } from "@/components/ui/button";
 import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 
@@ -9,12 +10,16 @@ export default async function TodayPage() {
   const organisation = await getCurrentOrganisation();
   if (!organisation) redirect("/onboarding");
 
-  const companies = await listCompanies(organisation.id);
+  const [companies, leads] = await Promise.all([
+    listCompanies(organisation.id),
+    listLeads(organisation.id),
+  ]);
   const needsReview = companies.filter((c) => c.status === "new");
   const highOpportunity = companies.filter(
     (c) => (c.opportunities?.[0]?.opportunity_score ?? 0) >= 70 && c.status !== "rejected",
   );
   const shortlisted = companies.filter((c) => c.status === "shortlisted");
+  const newLeads = leads.filter((l) => l.status === "new");
 
   return (
     <main className="mx-auto flex max-w-3xl flex-col gap-6 p-6">
@@ -73,17 +78,32 @@ export default async function TodayPage() {
             <Card className="flex items-center justify-between">
               <div>
                 <CardTitle>{shortlisted.length} shortlisted</CardTitle>
-                <CardDescription className="mt-1">
-                  Ready for a campaign once Campaign Builder ships (Phase 4).
-                </CardDescription>
+                <CardDescription className="mt-1">Ready to build a campaign around.</CardDescription>
               </div>
               <Button asChild variant="secondary">
-                <Link href="/companies">View</Link>
+                <Link href="/campaigns/new">Build campaign</Link>
               </Button>
             </Card>
           ) : null}
 
-          {needsReview.length === 0 && highOpportunity.length === 0 && shortlisted.length === 0 ? (
+          {newLeads.length > 0 ? (
+            <Card className="flex items-center justify-between">
+              <div>
+                <CardTitle>
+                  {newLeads.length} new lead{newLeads.length === 1 ? "" : "s"}
+                </CardTitle>
+                <CardDescription className="mt-1">Captured and waiting on you.</CardDescription>
+              </div>
+              <Button asChild variant="secondary">
+                <Link href="/leads">Review</Link>
+              </Button>
+            </Card>
+          ) : null}
+
+          {needsReview.length === 0 &&
+          highOpportunity.length === 0 &&
+          shortlisted.length === 0 &&
+          newLeads.length === 0 ? (
             <Card>
               <CardTitle>All caught up</CardTitle>
               <CardDescription className="mt-1">
