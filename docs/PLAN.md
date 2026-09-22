@@ -81,22 +81,54 @@ stays a complete audit trail.
       this hasn't been exercised end-to-end against a real database; it's
       covered by unit tests on the pure scoring function instead
       (`tests/unit/opportunity-engine.test.ts`).
-- [ ] **Phase 2 — Discovery.** `DiscoveryProvider` interface, Google Places
-      provider, dedupe, cheap qualification, suppression filtering.
-- [ ] **Phase 3 — Website intelligence.** SSRF-safe fetcher, PageSpeed,
-      signal extraction, evidence store, AI findings with confidence.
-- [ ] **Phase 4 — Campaign Builder.** Campaign model, audience prep, ad copy,
-      lead-form copy.
-- [ ] **Phase 5 — Lead capture.** Lead form, source/campaign attribution,
-      CSV import.
-- [ ] **Phase 6 — Sales engine.** Pitch/deck/proposal generation, sales
-      stages, Today screen, Won/Lost.
-- [ ] **Phase 7 — Direct prospecting & compliance hardening.** Consent
-      workflow, suppression, withdrawal, legal templates. (Critical
-      compliance primitives — RLS, activity trail — are already in from
-      Phase 0; this phase is about the consent-specific workflow.)
-- [ ] **Phase 8 — Billing & integrations.**
-- [ ] **Phase 9 — Intelligence layer.**
+- [x] **Phase 2 — Discovery.** `DiscoveryProvider` interface
+      (`src/integrations/discovery/`), a working CSV import provider, and a
+      *real* Google Places (New) Text Search integration — not a stub, but
+      it throws a clear config error without `GOOGLE_PLACES_API_KEY` (not
+      set in this environment). `company_sources` table for provider IDs,
+      dedupe on import, `/discover` UI for both paths.
+- [x] **Phase 3 — Website intelligence.** SSRF-safe fetcher
+      (`src/integrations/audit/`) blocking private/loopback/link-local
+      addresses (incl. the cloud metadata endpoint), regex-based HTML
+      signal extraction (viewport, title, meta description, H1, CTA,
+      booking links — no PageSpeed key needed for these), "Run website
+      audit" on the company workspace, evidence merge + re-score.
+- [x] **Phase 4 — Campaign Builder.** `campaigns`/`campaign_companies`/
+      `campaign_assets`, deterministic (template-based, not AI) angle/
+      offer/ad-copy/lead-form-copy generation from the Opportunity Pack's
+      own content, `/campaigns` UI. Prepares material only — never calls
+      an ad platform API (section 16).
+- [x] **Phase 5 — Lead capture.** `leads`/`lead_submissions`, a public
+      `/l/[campaignId]` form (service-role write from a trusted server
+      action, since there's no session for RLS to scope against), source/
+      campaign attribution, `/leads` UI.
+- [x] **Phase 6 — Sales engine.** Deterministic (template-based) pitch
+      email generation grounded in the opportunity's own evidence
+      (`src/domain/sales/pitch-generator.ts`), an explicit lead-status
+      transition table enforcing section 49's "invalid stage transitions
+      are rejected" (`src/domain/leads/pipeline.ts`), follow-ups,
+      meetings, proposals, deals, a real `/pipeline` board.
+- [x] **Phase 7 — Compliance scaffolding.** `consent_requests` (single
+      request per organisation+company+channel enforced by a unique
+      index, not just app code), `consent_events`, `suppression`;
+      `requestConsent`/`recordConsentResponse`/`withdrawConsent` (the
+      last cancels open follow-ups and adds suppression atomically);
+      `/compliance` UI. Technical enforcement only — see
+      `docs/LEGAL_REVIEW.md`; no wording here has been reviewed by
+      counsel, and nothing here is legal advice.
+- [ ] **Phase 8 — Billing & integrations.** Needs real payment provider
+      keys — not configured in this environment.
+- [ ] **Phase 9 — Intelligence layer.** Needs real conversion data from
+      actual usage, which doesn't exist yet.
+
+None of Phases 2–7 have been exercised against a live database — there's
+still no Supabase project provisioned (see Phase 0 note above and
+`docs/SETUP.md`). Every deterministic function (scoring, pitch
+generation, campaign assets, SSRF blocking, signal parsing, CSV parsing,
+the pipeline state machine) is unit-tested directly; the Supabase-touching
+domain commands are written against the same schema/RLS pattern as Phase
+0/1, which the static RLS test covers, but end-to-end behaviour against a
+real database is unverified until a project exists.
 
 ## Non-goals for V1
 
