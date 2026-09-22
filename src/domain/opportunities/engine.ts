@@ -84,8 +84,17 @@ function scoreServiceGap(pack: OpportunityPack, evidence: EvidenceValues, explan
 }
 
 function scoreConfidence(pack: OpportunityPack, evidence: EvidenceValues): ScoredOpportunity["confidence"] {
-  const total = pack.evidenceFields.length;
-  const defined = pack.evidenceFields.filter((f) => isDefined(evidence[f.key])).length;
+  // Once we know there's no website, the website-flaw fields (gapSignal)
+  // are moot — they were never going to be asked — so they shouldn't
+  // count against confidence. Otherwise a fully-answered "no website"
+  // case looks artificially uncertain.
+  const relevantFields =
+    evidence.hasWebsite === false
+      ? pack.evidenceFields.filter((f) => !f.gapSignal)
+      : pack.evidenceFields;
+
+  const total = relevantFields.length;
+  const defined = relevantFields.filter((f) => isDefined(evidence[f.key])).length;
   const ratio = total === 0 ? 0 : defined / total;
 
   if (ratio >= 0.7) return "high";

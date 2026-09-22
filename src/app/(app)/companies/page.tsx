@@ -4,12 +4,7 @@ import { getCurrentOrganisation } from "@/domain/organisations/queries";
 import { listCompanies } from "@/domain/companies/queries";
 import { Button } from "@/components/ui/button";
 import { Card, CardDescription, CardTitle } from "@/components/ui/card";
-
-function scoreColor(score: number) {
-  if (score >= 70) return "text-success";
-  if (score >= 45) return "text-warning";
-  return "text-ink-muted";
-}
+import { scoreColor } from "@/components/opportunity/score-color";
 
 export default async function CompaniesPage() {
   const organisation = await getCurrentOrganisation();
@@ -56,7 +51,7 @@ export default async function CompaniesPage() {
                   <div className="flex items-center gap-6">
                     {opportunity ? (
                       <div className="text-right">
-                        <p className={`font-display text-xl font-semibold ${scoreColor(opportunity.opportunity_score)}`}>
+                        <p className={`font-display text-xl font-semibold ${scoreColor(opportunity.opportunity_score, opportunity.confidence)}`}>
                           {opportunity.opportunity_score}
                         </p>
                         <p className="text-xs capitalize text-ink-muted">
