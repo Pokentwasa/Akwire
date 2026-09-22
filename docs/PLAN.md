@@ -70,9 +70,17 @@ stays a complete audit trail.
       ready in `supabase/migrations/0001_phase0_foundation.sql` for whenever
       a slot/upgrade is available. Until then the app runs against
       placeholder env vars for build/lint/test purposes only.
-- [ ] **Phase 1 — Opportunity Engine Prototype.** Manual company entry,
-      opportunities, evidence, first Opportunity Pack (web-design-local-
-      business), quick qualification, opportunity score, company workspace.
+- [x] **Phase 1 — Opportunity Engine Prototype.** Manual company entry
+      (`/companies/new`), the `web-design-local-business` Opportunity Pack,
+      a deterministic scoring engine (`src/domain/opportunities/engine.ts`)
+      producing ICP fit / business quality / service gap / timing +
+      confidence + a plain-language "why", company workspace
+      (`/companies/[id]`) with shortlist/reject, and a real Today screen.
+      Scoring is rules-based on collected evidence, not AI, for this
+      prototype — see `docs/SCORING.md`. No live Supabase project yet, so
+      this hasn't been exercised end-to-end against a real database; it's
+      covered by unit tests on the pure scoring function instead
+      (`tests/unit/opportunity-engine.test.ts`).
 - [ ] **Phase 2 — Discovery.** `DiscoveryProvider` interface, Google Places
       provider, dedupe, cheap qualification, suppression filtering.
 - [ ] **Phase 3 — Website intelligence.** SSRF-safe fetcher, PageSpeed,
