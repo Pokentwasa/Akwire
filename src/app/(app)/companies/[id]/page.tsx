@@ -5,15 +5,7 @@ import { getCompanyWorkspace } from "@/domain/companies/queries";
 import { rejectCompanyAction, shortlistCompanyAction } from "@/app/(app)/companies/actions";
 import { Button } from "@/components/ui/button";
 import { Card, CardDescription, CardTitle } from "@/components/ui/card";
-
-function ScoreDial({ label, value }: { label: string; value: number }) {
-  return (
-    <div className="flex flex-col items-center gap-1 rounded-md border border-border bg-surface p-4">
-      <p className="font-display text-2xl font-semibold text-ink">{value}</p>
-      <p className="text-center text-xs text-ink-muted">{label}</p>
-    </div>
-  );
-}
+import { ScoreDial } from "@/components/opportunity/score-dial";
 
 export default async function CompanyWorkspacePage({
   params,

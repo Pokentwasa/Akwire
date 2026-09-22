@@ -1,6 +1,12 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
+const PUBLIC_PREFIXES = ["/login", "/signup", "/demo"];
+
+function isPublicPath(pathname: string) {
+  return pathname === "/" || PUBLIC_PREFIXES.some((prefix) => pathname.startsWith(prefix));
+}
+
 export async function updateSession(request: NextRequest) {
   let response = NextResponse.next({ request });
 
@@ -11,10 +17,7 @@ export async function updateSession(request: NextRequest) {
   // open on public/auth routes rather than 500ing the whole site; app
   // routes still redirect to login since there's no session to check.
   if (!supabaseUrl || !supabaseAnonKey) {
-    const isAppRoute =
-      !request.nextUrl.pathname.startsWith("/login") &&
-      !request.nextUrl.pathname.startsWith("/signup") &&
-      request.nextUrl.pathname !== "/";
+    const isAppRoute = !isPublicPath(request.nextUrl.pathname);
 
     if (isAppRoute) {
       const redirectUrl = request.nextUrl.clone();
@@ -47,9 +50,7 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const isAuthRoute = request.nextUrl.pathname.startsWith("/login") ||
-    request.nextUrl.pathname.startsWith("/signup");
-  const isAppRoute = !isAuthRoute && request.nextUrl.pathname !== "/";
+  const isAppRoute = !isPublicPath(request.nextUrl.pathname);
 
   if (!user && isAppRoute) {
     const redirectUrl = request.nextUrl.clone();
